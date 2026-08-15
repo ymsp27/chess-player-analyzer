@@ -229,28 +229,15 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
   // Derive position FEN BEFORE the current move is played
   const prevFen = currentMoveIndex > 0 ? (fenHistory[currentMoveIndex - 1] || currentFen) : currentFen;
 
-  // Calculate PERSISTENT DUAL ARROWS on prevFen
-  const bestMovePair = showBestMoveArrow && currentMoveData?.best_move
+  // Calculate BEST MOVE ARROW on prevFen (position before move)
+  const bestMovePair = showBestMoveArrow && currentMoveData?.best_move && currentMoveIndex > 0
     ? getSquarePairFromMove(prevFen, currentMoveData.best_move)
     : null;
 
-  const playedMovePair = showBestMoveArrow && currentMoveData?.move
-    ? getSquarePairFromMove(prevFen, currentMoveData.move)
-    : null;
-
+  // Single clean cyan arrow for active step (never accumulates)
   const arrowsArray: Array<{ startSquare: string; endSquare: string; color: string }> = [];
 
-  // 1. Played Move Arrow (translucent slate grey/blue)
-  if (playedMovePair && currentMoveData?.classification !== 'Good') {
-    arrowsArray.push({
-      startSquare: playedMovePair[0],
-      endSquare: playedMovePair[1],
-      color: 'rgba(148, 163, 184, 0.75)',
-    });
-  }
-
-  // 2. Best Move Arrow (translucent cyan)
-  if (bestMovePair) {
+  if (bestMovePair && bestMovePair[0] && bestMovePair[1] && bestMovePair[0] !== bestMovePair[1]) {
     arrowsArray.push({
       startSquare: bestMovePair[0],
       endSquare: bestMovePair[1],
@@ -258,9 +245,9 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
     });
   }
 
-  // Highlight squares for best move & played move target squares
+  // Highlight squares for best move target square
   const customSquareStyles: Record<string, React.CSSProperties> = {};
-  if (bestMovePair) {
+  if (bestMovePair && bestMovePair[0] && bestMovePair[1]) {
     customSquareStyles[bestMovePair[0]] = {
       backgroundColor: 'rgba(6, 182, 212, 0.3)',
       borderRadius: '4px',
@@ -268,12 +255,6 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
     customSquareStyles[bestMovePair[1]] = {
       backgroundColor: 'rgba(6, 182, 212, 0.55)',
       boxShadow: 'inset 0 0 10px rgba(6, 182, 212, 0.9)',
-      borderRadius: '4px',
-    };
-  }
-  if (playedMovePair && playedMovePair[1] !== bestMovePair?.[1]) {
-    customSquareStyles[playedMovePair[1]] = {
-      backgroundColor: 'rgba(163, 230, 53, 0.45)',
       borderRadius: '4px',
     };
   }
@@ -448,6 +429,7 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
             {/* Reconstructed Chessboard with PERSISTENT ARROWS & Square Highlights */}
             <div className="flex-1 aspect-square w-full rounded-xl overflow-hidden shadow-2xl relative transition-all duration-300">
               <Chessboard
+                key={`${currentMoveIndex}-${boardOrientation}-${activeBoardTheme.id}`}
                 options={{
                   position: currentFen,
                   boardOrientation: boardOrientation,
