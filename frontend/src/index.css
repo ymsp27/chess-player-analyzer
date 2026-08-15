@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Cinzel', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  --color-forest-50: #F2F7F4;
+  --color-forest-100: #E1EFE7;
+  --color-forest-200: #C0DFC6;
+  --color-forest-300: #8FBFA7;
+  --color-forest-400: #52967A;
+  --color-forest-500: #2E775B;
+  --color-forest-600: #1E5E44;
+  --color-forest-700: #1A4D39;
+  --color-forest-800: #1E3A2B;
+  --color-forest-900: #132E1E;
+  --color-forest-950: #0A1B11;
+
+  --color-gold-50: #FAF7ED;
+  --color-gold-100: #F3E8C8;
+  --color-gold-200: #E8D494;
+  --color-gold-300: #D4AF37;
+  --color-gold-400: #C5A059;
+  --color-gold-500: #B8902A;
+  --color-gold-600: #9B741E;
+  --color-gold-700: #7B5818;
+  --color-gold-800: #644619;
+  --color-gold-900: #533919;
+
+  --color-warmbg: #FAFAF8;
+  --color-cardbg: #FFFFFF;
+}
+
+body {
+  background-color: #FAFAF8;
+  color: #0F172A;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(19, 46, 30, 0.05);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(19, 46, 30, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(19, 46, 30, 0.45);
+}
+
+/* Gold Gradient Utilities */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #F3E8C8 50%, #C5A059 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-forest-gradient {
+  background: linear-gradient(180deg, #132E1E 0%, #1E3A2B 100%);
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%);
+}
+
+.gold-border-glow {
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+}
+
+.shadow-soft {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.shadow-card {
+  box-shadow: 0 4px 20px -2px rgba(19, 46, 30, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
