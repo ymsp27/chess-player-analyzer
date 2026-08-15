@@ -52,11 +52,6 @@ def health():
 
 
 def get_analyzer():
-    if not os.path.exists(STOCKFISH_PATH):
-        raise HTTPException(
-            status_code=500,
-            detail=f"Stockfish not found: {STOCKFISH_PATH}",
-        )
     return StockfishAnalyzer(STOCKFISH_PATH)
 
 
@@ -96,33 +91,82 @@ async def analyze_game(
         except UnicodeDecodeError:
             raise HTTPException(status_code=400, detail="PGN must be UTF-8 text")
 
-    if not pgn:
+    if not pgn or not pgn.strip():
         raise HTTPException(status_code=400, detail="PGN is required")
 
-    try:
-        game = chess.pgn.read_game(io.StringIO(pgn))
-        if game is None:
-            raise ValueError("Invalid PGN")
-    except Exception:
-        raise HTTPException(status_code=400, detail="Could not read chess game")
+    stream = io.StringIO(pgn)
+    raw_games = []
+    while True:
+        try:
+            g = chess.pgn.read_game(stream)
+            if g is None:
+                break
+            raw_games.append(g)
+        except Exception:
+            break
+
+    if not raw_games:
+        raise HTTPException(status_code=400, detail="Could not read valid chess games from PGN")
 
     depth = max(8, min(depth, 22))
     analyzer = get_analyzer()
 
+    analyzed_games = []
+
     try:
-        moves = analyzer.analyze_game(game, depth=depth)
+        for idx, game in enumerate(raw_games, start=1):
+            moves = analyzer.analyze_game(game, depth=depth)
+            summary = analyze_moves(moves)
+
+            date = game.headers.get("Date", "")
+            utc_date = game.headers.get("UTCDate", "")
+            utc_time = game.headers.get("UTCTime", "")
+            time_val = game.headers.get("Time", "")
+            time_control = game.headers.get("TimeControl", "")
+
+            # Formatted readable timestamp
+            formatted_timestamp = f"{utc_date or date} {utc_time or time_val}".strip()
+            if not formatted_timestamp or formatted_timestamp == "????.??.??":
+                formatted_timestamp = date or "Unknown Date"
+
+            analyzed_games.append({
+                "game_index": idx,
+                "white": game.headers.get("White", "White Player"),
+                "black": game.headers.get("Black", "Black Player"),
+                "white_elo": game.headers.get("WhiteElo", ""),
+                "black_elo": game.headers.get("BlackElo", ""),
+                "white_title": game.headers.get("WhiteTitle", ""),
+                "black_title": game.headers.get("BlackTitle", ""),
+                "result": game.headers.get("Result", "*"),
+                "event": game.headers.get("Event", "Chess Game"),
+                "site": game.headers.get("Site", "Online"),
+                "date": date,
+                "utc_date": utc_date,
+                "utc_time": utc_time,
+                "timestamp": formatted_timestamp,
+                "time_control": time_control,
+                "eco": game.headers.get("ECO", ""),
+                "summary": summary,
+                "moves": moves,
+            })
     finally:
         analyzer.close()
 
-    summary = analyze_moves(moves)
+    # Primary game is the first game
+    primary = analyzed_games[0]
 
     return {
         "success": True,
-        "white": game.headers.get("White"),
-        "black": game.headers.get("Black"),
-        "result": game.headers.get("Result"),
-        "summary": summary,
-        "moves": moves,
+        "total_games": len(analyzed_games),
+        "games": analyzed_games,
+        "primary_game": primary,
+        # Backward compatibility fields for single game response
+        "white": primary["white"],
+        "black": primary["black"],
+        "result": primary["result"],
+        "timestamp": primary["timestamp"],
+        "summary": primary["summary"],
+        "moves": primary["moves"],
     }
 
 
