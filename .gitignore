@@ -8,19 +8,8 @@ env/
 venv/
 .venv/
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-!frontend/src/lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
 *.egg
 .pytest_cache/
 stockfish/
@@ -30,9 +19,13 @@ stockfish/
 node_modules/
 frontend/node_modules/
 frontend/dist/
+
+# Editor / System
 .vscode/
 .idea/
 .DS_Store
 *.log
+
+# Environment variables
 .env
 .env.local
