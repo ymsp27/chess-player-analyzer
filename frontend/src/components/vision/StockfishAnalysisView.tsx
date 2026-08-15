@@ -157,6 +157,8 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
     };
   }, [imageSrc]);
 
+  const [parsedLocalMoves, setParsedLocalMoves] = useState<GameMoveAnalysis[]>([]);
+
   // Parse FEN history for selected game index
   const buildLocalFenHistory = (fullPgn: string, targetIndex: number) => {
     try {
@@ -166,14 +168,30 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
 
       const history: string[] = [chess.fen()];
       chess.loadPgn(targetPgn);
-      const moveList = chess.history();
+      const moveList = chess.history({ verbose: true });
 
       const playChess = new Chess();
-      for (const move of moveList) {
-        playChess.move(move);
+      const localMoves: GameMoveAnalysis[] = [];
+
+      for (let idx = 0; idx < moveList.length; idx++) {
+        const m = moveList[idx];
+        playChess.move(m);
         history.push(playChess.fen());
+
+        localMoves.push({
+          move_number: idx + 1,
+          player: m.color === 'w' ? 'White' : 'Black',
+          move: m.san,
+          best_move: m.san,
+          best_evaluation: 0.2,
+          played_evaluation: 0.2,
+          centipawn_loss: 0,
+          classification: 'Good',
+        });
       }
+
       setFenHistory(history);
+      setParsedLocalMoves(localMoves);
       setCurrentMoveIndex(0);
     } catch (err) {
       console.warn('Could not parse local PGN FEN history:', err);
@@ -220,7 +238,13 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
 
   // Active game metadata
   const activeGame: SingleGameAnalysis | undefined = gameData?.games?.[selectedGameIndex];
-  const activeMoves = activeGame?.moves || gameData?.moves || [];
+  const backendMoves = (activeGame?.moves && activeGame.moves.length > 0)
+    ? activeGame.moves
+    : (gameData?.moves && gameData.moves.length > 0)
+    ? gameData.moves
+    : [];
+
+  const activeMoves = backendMoves.length > 0 ? backendMoves : parsedLocalMoves;
   const activeSummary = activeGame?.summary || gameData?.summary;
 
   const currentMoveData: GameMoveAnalysis | undefined = activeMoves[currentMoveIndex - 1];
