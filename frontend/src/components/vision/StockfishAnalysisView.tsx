@@ -407,10 +407,8 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
               <ShieldCheck className="w-4 h-4" /> Move {currentMoveIndex} / {fenHistory.length - 1}
             </span>
             <span className="font-mono text-[10px] text-slate-400">Orientation: {boardOrientation}</span>
-          </div>
-
-          {/* Board Theme Switcher & Best Move Arrow Banner */}
-          <div className="space-y-1">
+          </div>          {/* Board Theme Switcher & Best Move Arrow Banner */}
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-gold-300" /> Board Color Theme:
@@ -422,21 +420,21 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
               )}
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+            <div className="flex flex-wrap items-center gap-2 pt-1">
               {BOARD_THEMES.map((theme) => {
                 const isActive = activeBoardTheme.id === theme.id;
                 return (
                   <button
                     key={theme.id}
                     onClick={() => onSelectBoardTheme(theme)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer whitespace-nowrap ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-forest-800 text-gold-300 border-gold-300/80 shadow-md scale-105'
-                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 hover:border-slate-700'
+                        ? 'bg-forest-800 text-gold-300 border-gold-300 shadow-md scale-105'
+                        : 'bg-slate-900/90 text-slate-400 border-slate-800 hover:text-slate-200 hover:border-slate-700'
                     }`}
                   >
                     <span
-                      className="w-3 h-3 rounded-full border border-slate-600 shadow-sm inline-block"
+                      className="w-3.5 h-3.5 rounded-full border border-slate-600 shadow-sm inline-block shrink-0"
                       style={{ backgroundColor: theme.darkSquare }}
                     />
                     <span>{theme.name}</span>
@@ -530,9 +528,6 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
                   {activeGame?.white_title && <span className="text-gold-300 mr-1">[{activeGame.white_title}]</span>}
                   {activeGame?.white || 'White'}
                 </div>
-                {activeGame?.white_elo && (
-                  <div className="text-[10px] font-mono text-gold-300">Rating: {activeGame.white_elo} ELO</div>
-                )}
               </div>
             </div>
 
@@ -547,9 +542,6 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
                   {activeGame?.black_title && <span className="text-gold-300 mr-1">[{activeGame.black_title}]</span>}
                   {activeGame?.black || 'Black'}
                 </div>
-                {activeGame?.black_elo && (
-                  <div className="text-[10px] font-mono text-gold-300">Rating: {activeGame.black_elo} ELO</div>
-                )}
               </div>
             </div>
           </div>
