@@ -17,24 +17,35 @@
   --color-forest-900: #132E1E;
   --color-forest-950: #0A1B11;
 
-  --color-gold-50: #FAF7ED;
-  --color-gold-100: #F3E8C8;
-  --color-gold-200: #E8D494;
-  --color-gold-300: #D4AF37;
-  --color-gold-400: #C5A059;
-  --color-gold-500: #B8902A;
-  --color-gold-600: #9B741E;
-  --color-gold-700: #7B5818;
-  --color-gold-800: #644619;
-  --color-gold-900: #533919;
+  --color-gold-50: #FAF6F0;
+  --color-gold-100: #F3E6D5;
+  --color-gold-200: #E4C7A3;
+  --color-gold-300: #D48C46;
+  --color-gold-400: #B07238;
+  --color-gold-500: #965A27;
+  --color-gold-600: #7D471C;
+  --color-gold-700: #643E1D;
+  --color-gold-800: #4B2C14;
+  --color-gold-900: #331D0C;
 
-  --color-warmbg: #FAFAF8;
+  --color-brown-50: #FAF6F0;
+  --color-brown-100: #F3E6D5;
+  --color-brown-200: #E4C7A3;
+  --color-brown-300: #D48C46;
+  --color-brown-400: #B07238;
+  --color-brown-500: #965A27;
+  --color-brown-600: #7D471C;
+  --color-brown-700: #643E1D;
+  --color-brown-800: #4B2C14;
+  --color-brown-900: #331D0C;
+
+  --color-warmbg: #FAF6F0;
   --color-cardbg: #FFFFFF;
 }
 
 body {
-  background-color: #FAFAF8;
-  color: #0F172A;
+  background-color: #0F1D15;
+  color: #F8FAFC;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -48,30 +59,33 @@ body {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(19, 46, 30, 0.25);
+  background: rgba(212, 140, 70, 0.3);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(19, 46, 30, 0.45);
+  background: rgba(212, 140, 70, 0.5);
 }
 
-/* Gold Gradient Utilities */
-.text-gold-gradient {
-  background: linear-gradient(135deg, #D4AF37 0%, #F3E8C8 50%, #C5A059 100%);
+/* Brown & Amber Gradient Utilities */
+.text-gold-gradient,
+.text-brown-gradient {
+  background: linear-gradient(135deg, #E4C7A3 0%, #D48C46 50%, #B07238 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .bg-forest-gradient {
-  background: linear-gradient(180deg, #132E1E 0%, #1E3A2B 100%);
+  background: linear-gradient(180deg, #0A1B11 0%, #132E1E 100%);
 }
 
-.bg-gold-gradient {
-  background: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%);
+.bg-gold-gradient,
+.bg-brown-gradient {
+  background: linear-gradient(135deg, #D48C46 0%, #B07238 100%);
 }
 
-.gold-border-glow {
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+.gold-border-glow,
+.brown-border-glow {
+  box-shadow: 0 0 16px rgba(212, 140, 70, 0.35);
 }
 
 .shadow-soft {
