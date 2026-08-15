@@ -2,6 +2,7 @@ import os
 import shutil
 import chess
 import chess.engine
+import chess.pgn
 
 PIECE_VALUES = {
     chess.PAWN: 1.0,
