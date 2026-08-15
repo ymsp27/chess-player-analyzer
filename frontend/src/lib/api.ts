@@ -57,6 +57,10 @@ export interface SingleGameAnalysis {
     mistakes: number;
     blunders: number;
     average_centipawn_loss: number;
+    white_accuracy?: number;
+    black_accuracy?: number;
+    white_acl?: number;
+    black_acl?: number;
   };
   moves: GameMoveAnalysis[];
 }

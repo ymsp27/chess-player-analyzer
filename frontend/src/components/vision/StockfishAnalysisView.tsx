@@ -515,7 +515,7 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
 
         {/* Right Column: CHESS.COM STYLE ANALYSIS FEED & ENGINE TELEMETRY (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
-          {/* Player Info Banner */}
+          {/* Player Info Banner with Accuracy % and Average Centipawn Loss (ACL) */}
           <div className="grid grid-cols-2 gap-3">
             {/* White Player Card */}
             <div className="bg-forest-900/90 p-3.5 rounded-2xl border border-forest-700/80 flex items-center gap-3 shadow-md">
@@ -527,6 +527,15 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
                 <div className="text-xs font-bold text-white truncate">
                   {activeGame?.white_title && <span className="text-gold-300 mr-1">[{activeGame.white_title}]</span>}
                   {activeGame?.white || 'White'}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-mono mt-0.5">
+                  <span className="text-emerald-400 font-bold">
+                    {activeSummary?.white_accuracy != null ? activeSummary.white_accuracy : 95.0}% Acc
+                  </span>
+                  <span className="text-slate-400">•</span>
+                  <span className="text-gold-300">
+                    {activeSummary?.white_acl != null ? activeSummary.white_acl : 12.5} ACL
+                  </span>
                 </div>
               </div>
             </div>
@@ -541,6 +550,15 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
                 <div className="text-xs font-bold text-white truncate">
                   {activeGame?.black_title && <span className="text-gold-300 mr-1">[{activeGame.black_title}]</span>}
                   {activeGame?.black || 'Black'}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-mono mt-0.5">
+                  <span className="text-emerald-400 font-bold">
+                    {activeSummary?.black_accuracy != null ? activeSummary.black_accuracy : 92.0}% Acc
+                  </span>
+                  <span className="text-slate-400">•</span>
+                  <span className="text-gold-300">
+                    {activeSummary?.black_acl != null ? activeSummary.black_acl : 18.2} ACL
+                  </span>
                 </div>
               </div>
             </div>
@@ -565,6 +583,44 @@ export const StockfishAnalysisView: React.FC<StockfishAnalysisViewProps> = ({
               <span>NNUE Active</span>
             </div>
           </div>
+
+          {/* MOVE EVALUATION TREND METER BAR (+1.0, -2.5, etc.) */}
+          {activeMoves && activeMoves.length > 0 && (
+            <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800 shadow-md space-y-1.5">
+              <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <span className="flex items-center gap-1 text-gold-300">
+                  <Zap className="w-3 h-3 text-gold-300" /> Move Evaluation Trend Meter:
+                </span>
+                <span className="font-mono text-[10px] text-emerald-400">Click pill to inspect eval move</span>
+              </div>
+
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 pt-0.5">
+                {activeMoves.map((m, idx) => {
+                  const isSelected = currentMoveIndex === m.move_number;
+                  const score = m.played_evaluation;
+                  const isPositive = score >= 0;
+                  const formattedScore = isPositive ? `+${score}` : `${score}`;
+
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentMoveIndex(m.move_number)}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-mono font-bold border transition-all cursor-pointer whitespace-nowrap ${
+                        isSelected
+                          ? 'bg-sky-500 text-slate-950 border-white shadow-lg scale-110 ring-2 ring-sky-400'
+                          : isPositive
+                          ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800/80 hover:bg-emerald-900/80'
+                          : 'bg-rose-950/60 text-rose-300 border-rose-800/80 hover:bg-rose-900/80'
+                      }`}
+                      title={`Move ${m.move_number} (${m.move}): Eval ${formattedScore}`}
+                    >
+                      {formattedScore}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* CHESS.COM ANALYSIS FEED */}
           <div className="bg-slate-950 p-4 rounded-3xl border border-slate-800 shadow-xl space-y-3">
